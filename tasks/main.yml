@@ -1,0 +1,23 @@
+---
+# tasks file for ansible-monit
+- yum: name=monit
+  tags:
+  - monit
+  - monit.yum
+
+- template: src=./{{ item }}.conf dest=/etc/monit.d/{{ item }}.conf
+  with_items:
+  - consul
+  - consul-template
+  - sshd
+  - dnsmasq
+  tags:
+  - monit
+  - monit.conf
+  notify:
+  - reload monit
+
+- service: name=monit state=started
+  tags:
+  - monit
+  - monit.service
